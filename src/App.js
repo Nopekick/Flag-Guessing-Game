@@ -6,9 +6,8 @@ class App extends Component {
     super(props)
     this.state = {
       countries: [],
-      selectedCountry: '',
+      correctCountry: {},
       chosenCountry: '',
-      chosenFlag: '',
       track: 'GUESSING'  //either 'GUESSING', 'INCORRECT', OR 'CORRECT'
     }
     this.handleChange = this.handleChange.bind(this);
@@ -28,33 +27,30 @@ componentDidMount(){
       countries.add(country)
     }
     countries = [...countries]
-    const i = countries[Math.floor(Math.random()*countries.length)]
-    const chosenCountry = i.name
-    const chosenFlag = i.flag
-    this.setState({chosenCountry})
+    const correctCountry = countries[Math.floor(Math.random()*countries.length)]
+    this.setState({correctCountry})
     this.setState({countries})
-    this.setState({chosenFlag})
   })
 
 }
 
 handleChange(e){
-  const selectedCountry = e.value
-  this.setState({selectedCountry})
+  const chosenCountry = e.value
+  this.setState({chosenCountry})
 }
 
 handleSubmit(){
-  this.state.selectedCountry === this.state.chosenCountry
+  this.state.chosenCountry === this.state.correctCountry.name
     ? this.setState({track: 'CORRECT'}) : this.setState({track: 'INCORRECT'})
-  this.componentDidMount()
 }
 
 handleNext(){
   this.setState({track: 'GUESSING'})
+  this.setState({chosenCountry: ''})
+  this.componentDidMount();
 }
 
   render() {
-    console.log(this.state.countries)
     const choices = this.state.countries.map((country, i) => (
       <label key={i}> {country.name}
         <input type="radio" style={{'marginRight': '20px'}}name="country" value={country.name} onClick={this.handleChange} />
@@ -68,20 +64,20 @@ handleNext(){
               {choices}
               <button>GUESS</button>
             </form>
-            <img src={this.state.chosenFlag} />
+            <img src={this.state.correctCountry.flag} />
           </div>)
           : (this.state.track === 'CORRECT'
               ?
               (<div>
-                <p>Correct, the country was {this.state.chosenCountry} </p>
+                <p>Correct, the country was {this.state.correctCountry.name} </p>
                 <button type="button" onClick={this.handleNext}>NEXT</button>
-                <img src={this.state.chosenCountry.flag} />
+                <img src={this.state.correctCountry.flag} />
               </div>)
               :
               (<div>
-                <p>Sorry, but the correct country was {this.state.chosenCountry} </p>
+                <p>Sorry, but the correct country was {this.state.correctCountry.name} </p>
                 <button type="button" onClick={this.handleNext}>NEXT</button>
-                <img src={this.state.chosenCountry.flag} />
+                <img src={this.state.correctCountry.flag} />
               </div>)
             )
         }
