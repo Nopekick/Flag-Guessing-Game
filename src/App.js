@@ -35,25 +35,31 @@ componentDidMount(){
 }
 
 handleChange(e){
-  const chosenCountry = e.value
+  const chosenCountry = e.currentTarget.value
   this.setState({chosenCountry})
 }
 
-handleSubmit(){
+handleSubmit(e){
+  e.preventDefault()
+  console.log(this.state.chosenCountry === this.state.correctCountry.name)
   this.state.chosenCountry === this.state.correctCountry.name
     ? this.setState({track: 'CORRECT'}) : this.setState({track: 'INCORRECT'})
 }
 
 handleNext(){
-  this.setState({track: 'GUESSING'})
-  this.setState({chosenCountry: ''})
+  this.setState({
+    track: 'GUESSING',
+    chosenCountry: ''
+  })
   this.componentDidMount();
 }
 
   render() {
+    const imgStyle = {'height': '600px', 'width': '600px'}
     const choices = this.state.countries.map((country, i) => (
       <label key={i}> {country.name}
-        <input type="radio" style={{'marginRight': '20px'}}name="country" value={country.name} onClick={this.handleChange} />
+        <input type="radio" style={{'marginRight': '20px'}} checked={this.state.chosenCountry === country.name}
+          name="country" value={country.name} onClick={this.handleChange} />
       </label>
     ))
     return (
@@ -64,20 +70,20 @@ handleNext(){
               {choices}
               <button>GUESS</button>
             </form>
-            <img src={this.state.correctCountry.flag} />
+            <img style={imgStyle} src={this.state.correctCountry.flag} />
           </div>)
           : (this.state.track === 'CORRECT'
               ?
               (<div>
                 <p>Correct, the country was {this.state.correctCountry.name} </p>
                 <button type="button" onClick={this.handleNext}>NEXT</button>
-                <img src={this.state.correctCountry.flag} />
+                <img style={imgStyle} src={this.state.correctCountry.flag} />
               </div>)
               :
               (<div>
                 <p>Sorry, but the correct country was {this.state.correctCountry.name} </p>
                 <button type="button" onClick={this.handleNext}>NEXT</button>
-                <img src={this.state.correctCountry.flag} />
+                <img style={imgStyle} src={this.state.correctCountry.flag} />
               </div>)
             )
         }
